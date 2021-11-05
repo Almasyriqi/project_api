@@ -92,6 +92,33 @@ app.delete('/project/:projectId', (req, res) => {
     })
 })
 
+app.get('/project/:projectId', (req, res) => {
+    const {projectId} = req.params
+
+    db.query(`SELECT * FROM project WHERE project_id = ${projectId}`, (err, result, fields) => {
+        if(!err) {
+            if(result.length) {
+                res.status(200).send({
+                    success: true,
+                    message: `Project with id = ${projectId}`,
+                    data: result
+                })
+            } else {
+                res.status(404).send({
+                    success: false,
+                    message: 'Item project not found!'
+                })
+            }
+        } else {
+            res.status(500).send({
+                success: false,
+                message: 'Internal Server Error!'
+            })
+        }
+        
+    })
+})
+
 app.listen(port, () => {
     console.log(`Listen app backend on port ${port}`)
 })
