@@ -65,6 +65,33 @@ app.post('/project', (req, res) => {
     })
 })
 
+app.delete('/project/:projectId', (req, res) => {
+    const { projectId } = req.params
+
+    db.query(`SELECT * FROM project WHERE project_id = ${projectId}`, (err, result, fields) => {
+        if (result.length) {
+            db.query(`DELETE FROM project WHERE project_id = ${projectId}`, (err, result, fields) => {
+                if(result.affectedRows) {
+                    res.status(200).send({
+                        success: true,
+                        message: `Item project id ${projectId} has been deleted!`
+                    })
+                } else {
+                    res.status(404).send({
+                        success: false,
+                        message: 'Item project failed to delete'
+                    })
+                }
+            })
+        } else {
+            res.status(404).send({
+                success: false,
+                message: 'Data project not found!'
+            })
+        }
+    })
+})
+
 app.listen(port, () => {
     console.log(`Listen app backend on port ${port}`)
 })
